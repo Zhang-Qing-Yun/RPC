@@ -12,16 +12,20 @@ import com.qingyun.rpc.core.loadbalancer.RandomLoadBalancer;
 import com.qingyun.rpc.core.registry.NacosServiceDiscovery;
 import com.qingyun.rpc.core.registry.ServiceDiscovery;
 import com.qingyun.rpc.core.serializer.Serializer;
+import com.qingyun.rpc.core.transport.client.handler.HeartBeatClientHandler;
 import com.qingyun.rpc.core.transport.client.handler.NettyRespClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @description： 使用Netty作为客户端
@@ -83,10 +87,11 @@ public class NettyClient implements RPCClient{
                 .handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
-                    //TODO：心跳
                     ChannelPipeline pipeline = ch.pipeline();
-                    pipeline.addLast(new RPCMessageDecoder())
+                    pipeline.addLast(new IdleStateHandler(10, 0, 0))  // 30秒未收到消息则自动关闭链路
+                            .addLast(new RPCMessageDecoder())
                             .addLast(new RPCMessageEncoder(serializer))
+                            .addLast(new HeartBeatClientHandler())
                             .addLast(new NettyRespClientHandler());
             }
         });

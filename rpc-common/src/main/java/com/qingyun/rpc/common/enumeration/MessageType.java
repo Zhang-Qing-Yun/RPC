@@ -7,11 +7,13 @@ package com.qingyun.rpc.common.enumeration;
  **/
 public enum MessageType {
     //  心跳请求
-    HEARTBEAT_TYPE(0),
+    PING(0),
     //  客户端请求
     REQUEST_TYPE(1),
     //  服务端响应
-    RESPONSE_TYPE(2);
+    RESPONSE_TYPE(2),
+    //  心跳回复
+    PONG(3);
 
 
     private final int typeId;
