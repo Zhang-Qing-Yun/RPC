@@ -12,7 +12,7 @@ import java.util.Random;
  **/
 public class RandomLoadBalancer implements LoadBalancer{
     @Override
-    public Instance select(List<Instance> instances) {
+    public Instance select(List<Instance> instances, String serviceName, String requestId) {
         int index = new Random().nextInt(instances.size());
         return instances.get(index);
     }

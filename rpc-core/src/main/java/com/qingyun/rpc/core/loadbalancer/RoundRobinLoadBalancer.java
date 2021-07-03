@@ -14,7 +14,7 @@ public class RoundRobinLoadBalancer implements LoadBalancer{
     private final AtomicInteger index = new AtomicInteger(0);
 
     @Override
-    public Instance select(List<Instance> instances) {
+    public Instance select(List<Instance> instances, String serviceName, String requestId) {
         if(index.get() >= instances.size()) {
             index.set(index.get() % instances.size());
         }

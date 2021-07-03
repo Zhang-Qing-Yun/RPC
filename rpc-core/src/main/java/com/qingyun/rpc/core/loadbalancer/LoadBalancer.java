@@ -13,9 +13,11 @@ public interface LoadBalancer {
 
     /**
      * 从全部元素中通过负载均衡机制选择一个
+     * 调用该方法的一定是Request类型的消息
      * @param instances 全部元素
-     * @return
+     * @param serviceName 服务名
+     * @param requestId 请求id
+     * @return 实例
      */
-    Instance select(List<Instance> instances);
-    //  TODO: 哈希一致性算法
+    Instance select(List<Instance> instances, String serviceName, String requestId);
 }

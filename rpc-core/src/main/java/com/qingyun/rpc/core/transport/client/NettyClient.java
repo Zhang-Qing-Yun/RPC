@@ -106,7 +106,7 @@ public class NettyClient implements RPCClient{
         CompletableFuture<RPCMessage> future = new CompletableFuture<>();
         Request request = (Request) rpcMessage.getBody();
         //  使用负载均衡机制从注册中心的所有服务提供者中选择一个
-        InetSocketAddress address = serviceDiscovery.lookupService(request.getInterfaceName());
+        InetSocketAddress address = serviceDiscovery.lookupService(request.getInterfaceName(), rpcMessage.getHeader().getId());
         Channel channel = channelManager.getOrCreateChannel(address);
         RequestsManager.addRequest(rpcMessage.getHeader().getId(), future);
         //  发送数据

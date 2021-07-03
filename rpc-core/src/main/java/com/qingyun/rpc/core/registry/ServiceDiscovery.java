@@ -12,7 +12,8 @@ public interface ServiceDiscovery {
     /**
      * 根据服务名从注册中心中寻找一个服务提供者
      * @param serviceName 服务名
+     * @param requestId 请求的id
      * @return 服务提供者
      */
-    InetSocketAddress lookupService(String serviceName);
+    InetSocketAddress lookupService(String serviceName, String requestId);
 }

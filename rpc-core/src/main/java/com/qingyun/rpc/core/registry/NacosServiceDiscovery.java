@@ -31,14 +31,14 @@ public class NacosServiceDiscovery implements ServiceDiscovery{
     }
 
     @Override
-    public InetSocketAddress lookupService(String serviceName) {
+    public InetSocketAddress lookupService(String serviceName, String requestId) {
         try {
             List<Instance> instances = NacosUtils.getAllInstances(serviceName);
             if (instances.size() == 0) {
                 log.info("获取不到服务[{}]", serviceName);
                 throw new RPCException(ExceptionType.NO_SERVICE.getCode(), ExceptionType.NO_SERVICE.getMessage());
             }
-            Instance instance = loadBalancer.select(instances);
+            Instance instance = loadBalancer.select(instances, serviceName, requestId);
             return new InetSocketAddress(instance.getIp(), instance.getPort());
         } catch (NacosException e) {
             log.error("获取服务列表失败");
