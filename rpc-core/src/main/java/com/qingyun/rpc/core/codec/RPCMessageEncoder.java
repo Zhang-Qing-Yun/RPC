@@ -40,26 +40,8 @@ public class RPCMessageEncoder extends MessageToByteEncoder<RPCMessage> {
         byte[] id = msg.getHeader().getId().getBytes(StandardCharsets.UTF_8);
         sendBuf.writeInt(id.length);
         sendBuf.writeBytes(id);
+        //  编码消息类型
         sendBuf.writeInt(msg.getHeader().getType());
-        //  在编码附件前，先编码一个int，表示附件的个数
-        sendBuf.writeInt(msg.getHeader().getAttachment().size());
-        //  编码附件
-        Map<String, Object> attachment = msg.getHeader().getAttachment();
-        String key = null;
-        byte[] keyArray = null;
-        Object value = null;
-        byte[] valueArray = null;
-        for(Map.Entry<String, Object> param: attachment.entrySet()) {
-            key = param.getKey();
-            keyArray = key.getBytes(StandardCharsets.UTF_8);
-            sendBuf.writeInt(keyArray.length);
-            sendBuf.writeBytes(keyArray);
-            value = param.getValue();
-            //  调用序列化器序列化一个对象
-            valueArray = serializer.serialize(value);
-            sendBuf.writeInt(valueArray.length);
-            sendBuf.writeBytes(valueArray);
-        }
 
         //  编码消息体
         if (msg.getBody() != null) {
@@ -67,6 +49,7 @@ public class RPCMessageEncoder extends MessageToByteEncoder<RPCMessage> {
             sendBuf.writeInt(bodyArray.length);
             sendBuf.writeBytes(bodyArray);
         } else {
+            //  消息体为空时，写入一个0
             sendBuf.writeInt(0);
         }
 

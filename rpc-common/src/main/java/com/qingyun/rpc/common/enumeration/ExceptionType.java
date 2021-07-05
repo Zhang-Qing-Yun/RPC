@@ -25,7 +25,8 @@ public enum ExceptionType {
     NETTY_START_FAIL(12, "netty服务端启动失败"),
     CALL_FAIL(13, "远程调用方法失败"),
     CONN_SERVER_FAIL(14, "连接服务端失败"),
-    SEND_FAIL(15, "发送消息失败");
+    SEND_FAIL(15, "发送消息失败"),
+    MESSAGE_TYPE_ERROR(16, "消息类型错误");
 
     private final int code;
     private final String message;

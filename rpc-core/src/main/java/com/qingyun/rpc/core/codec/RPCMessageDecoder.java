@@ -3,6 +3,7 @@ package com.qingyun.rpc.core.codec;
 import com.qingyun.rpc.common.entity.Header;
 import com.qingyun.rpc.common.entity.RPCMessage;
 import com.qingyun.rpc.common.enumeration.ExceptionType;
+import com.qingyun.rpc.common.enumeration.MessageType;
 import com.qingyun.rpc.common.exception.RPCException;
 import com.qingyun.rpc.core.serializer.Serializer;
 import io.netty.buffer.ByteBuf;
@@ -11,8 +12,6 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -37,7 +36,6 @@ public class RPCMessageDecoder extends LengthFieldBasedFrameDecoder {
         if (frame == null) {
             return null;
         }
-        
 
         //  读取序列化方式
         int serializerType = frame.readInt();
@@ -62,35 +60,20 @@ public class RPCMessageDecoder extends LengthFieldBasedFrameDecoder {
         header.setId(new String(array, StandardCharsets.UTF_8));
         //  读入消息类型
         header.setType(frame.readInt());
-        //  读入附件
-        int attachmentCount = frame.readInt();
-        if (attachmentCount > 0) {
-            Map<String, Object> attachment = new HashMap<>(attachmentCount);
-            int keySize = 0;
-            byte[] keyArray = null;
-            String key = null;
-            int valueSize = 0;
-            byte[] valueArray = null;
-            Object value = null;
-            for(int i = 0; i < attachmentCount; i++) {
-                keySize = frame.readInt();
-                keyArray = new byte[keySize];
-                frame.readBytes(keyArray);
-                key = new String(keyArray, StandardCharsets.UTF_8);
-                valueSize = frame.readInt();
-                valueArray = new byte[valueSize];
-                frame.readBytes(keyArray);
-                Object valueObject = serializer.deserialize(valueArray, Object.class);
-                attachment.put(key, valueObject);
-            }
-            header.setAttachment(attachment);
-        }
+
+        //  读入消息体
         Object body = null;
+        //  判断消息体是否为空
         if(frame.readableBytes() > 4) {
+            Class<?> bodyType = MessageType.getBodyType(header.getType());
+            if (bodyType == null) {
+                log.error("消息类型【{}】错误或不存在", header.getType());
+                throw new RPCException(ExceptionType.MESSAGE_TYPE_ERROR.getCode(), ExceptionType.MESSAGE_TYPE_ERROR.getMessage());
+            }
             int bodySize = frame.readInt();
             byte[] bodyArray = new byte[bodySize];
             frame.readBytes(bodyArray);
-            body = serializer.deserialize(bodyArray, Object.class);
+            body = serializer.deserialize(bodyArray, bodyType);
             rpcMessage.setBody(body);
         }
         rpcMessage.setHeader(header);

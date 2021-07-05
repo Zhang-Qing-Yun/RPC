@@ -3,6 +3,8 @@ import com.qingyun.rpc.common.entity.RPCMessage;
 import com.qingyun.rpc.common.entity.Request;
 import com.qingyun.rpc.common.enumeration.MessageType;
 import com.qingyun.rpc.core.serializer.MarshallingSerializer;
+import com.qingyun.rpc.core.serializer.ProtostuffSerializer;
+import com.qingyun.rpc.core.serializer.Serializer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +14,7 @@ import org.junit.Test;
  * @create: 2021-06-24 22:52
  **/
 public class SerializerTest {
-    MarshallingSerializer serializer = new MarshallingSerializer();
+    Serializer serializer = new ProtostuffSerializer();
     RPCMessage requestMsg = new RPCMessage();
 
     @Before
@@ -28,7 +30,7 @@ public class SerializerTest {
     }
 
     @Test
-    public void marshallingSerializerTest() {
+    public void serializerTest() {
         byte[] bytes = serializer.serialize(requestMsg);
         System.out.println(bytes.length);
     }
@@ -39,4 +41,5 @@ public class SerializerTest {
         RPCMessage o = (RPCMessage)serializer.deserialize(bytes, RPCMessage.class);
         System.out.println(o);
     }
+
 }

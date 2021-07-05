@@ -37,10 +37,6 @@ public class Header implements Serializable {
      */
     private int type;
 
-    /**
-     * 附件
-     */
-    private Map<String, Object> attachment = new HashMap<>();
 
     public Header(String id, int type) {
         this.id = id;

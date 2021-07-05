@@ -23,7 +23,7 @@
         <fastjson-version>1.2.28</fastjson-version>
         <nacos-client-version>1.3.0</nacos-client-version>
         <marshalling-version>2.0.0.Beta2</marshalling-version>
-        <protobuf-version>3.17.3</protobuf-version>
+        <protostuff-version>1.7.2</protostuff-version>
     </properties>
 
     <dependencies>

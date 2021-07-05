@@ -8,6 +8,7 @@ package com.qingyun.rpc.core.serializer;
 public interface Serializer {
     //  序列化器的类型
     int MARSHALLING = 0;
+    int PROTOSTUFF = 1;
 
 
     /**
@@ -40,6 +41,8 @@ public interface Serializer {
         switch (code) {
             case MARSHALLING:
                 return new MarshallingSerializer();
+            case PROTOSTUFF:
+                return new ProtostuffSerializer();
             default:
                 return null;
         }

@@ -10,7 +10,7 @@ import com.qingyun.rpc.core.transport.server.NettyServer;
 public class NettyServerApp {
 
     public static void main(String[] args) {
-        NettyServer server = new NettyServer("127.0.0.1", 9998, Serializer.MARSHALLING);
+        NettyServer server = new NettyServer("127.0.0.1", 9998, Serializer.PROTOSTUFF);
         server.publishService(HelloService.class.getName(), new HelloServiceImpl());
         server.start();
     }
